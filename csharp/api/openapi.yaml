@@ -1,0 +1,2701 @@
+openapi: 3.1.0
+info:
+  title: Budgeting Server
+  version: 0.1.1
+servers:
+- url: /
+paths:
+  /api/v1/login:
+    post:
+      operationId: login_for_access_token
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_Login-login_for_access_token'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Login For Access Token
+      tags:
+      - Login
+  /api/v1/refresh:
+    post:
+      operationId: refresh_access_token
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: Successful Response
+      summary: Refresh Access Token
+      tags:
+      - Login
+  /api/v1/logout:
+    post:
+      operationId: logout
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Logout
+      tags:
+      - Login
+  /api/v1/user:
+    get:
+      operationId: get_users
+      parameters:
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          title: Page
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: items_per_page
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          title: Items Per Page
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListResponse_UserRead_'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Users
+      tags:
+      - Users
+    post:
+      operationId: create_user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRead'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Create User
+      tags:
+      - Users
+  /api/v1/user/me/:
+    get:
+      operationId: get_users_me
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRead'
+          description: Successful Response
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Users Me
+      tags:
+      - Users
+  /api/v1/user/{username}:
+    delete:
+      operationId: delete_user
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          title: Username
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Delete User
+      tags:
+      - Users
+    get:
+      operationId: get_user
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          title: Username
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRead'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get User
+      tags:
+      - Users
+    patch:
+      operationId: update_user
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          title: Username
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Update User
+      tags:
+      - Users
+  /api/v1/db_user/{username}:
+    delete:
+      operationId: db_delete_user
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          title: Username
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Db Delete User
+      tags:
+      - Users
+  /api/v1/user/{username}/rate_limits:
+    get:
+      operationId: get_user_rate_limits
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          title: Username
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                title: Response Users-Get User Rate Limits
+                type: object
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get User Rate Limits
+      tags:
+      - Users
+  /api/v1/user/{username}/tier:
+    get:
+      operationId: get_user_tier
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          title: Username
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                nullable: true
+                type: object
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get User Tier
+      tags:
+      - Users
+    patch:
+      operationId: update_user_tier
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          title: Username
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserTierUpdate'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Update User Tier
+      tags:
+      - Users
+  /api/v1/purchase-category:
+    get:
+      operationId: get_purchase_categories
+      parameters:
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          title: Page
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: items_per_page
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          title: Items Per Page
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListResponse_PurchaseCategoryRead_'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Purchase Categories
+      tags:
+      - User Purchase Category
+    post:
+      operationId: create_purchase_category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseCategoryCreate'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseCategoryRead'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Create Purchase Category
+      tags:
+      - User Purchase Category
+  /api/v1/purchase-category/{purchase_category_uuid}:
+    delete:
+      operationId: delete_purchase_category
+      parameters:
+      - description: The UUID of the purchase category to delete.
+        explode: false
+        in: path
+        name: purchase_category_uuid
+        required: true
+        schema:
+          description: The UUID of the purchase category to delete.
+          format: uuid
+          title: Purchase Category Uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Delete Purchase Category
+      tags:
+      - User Purchase Category
+    put:
+      operationId: update_purchase_category
+      parameters:
+      - description: The UUID of the purchase category to update.
+        explode: false
+        in: path
+        name: purchase_category_uuid
+        required: true
+        schema:
+          description: The UUID of the purchase category to update.
+          format: uuid
+          title: Purchase Category Uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseCategoryUpdate'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Update Purchase Category
+      tags:
+      - User Purchase Category
+  /api/v1/transaction:
+    get:
+      operationId: get_user_transactions
+      parameters:
+      - description: Get transactions before this date
+        explode: true
+        in: query
+        name: before
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - description: Get transactions after this date
+        explode: true
+        in: query
+        name: after
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          title: Page
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: items_per_page
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          title: Items Per Page
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListResponse_TransactionRead_'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get User Transactions
+      tags:
+      - Transactions
+    post:
+      operationId: create_user_transaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionCreate'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRead'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Create User Transaction
+      tags:
+      - Transactions
+  /api/v1/transaction/{transaction_uuid}:
+    delete:
+      operationId: delete_transaction
+      parameters:
+      - description: UUID of the transaction
+        explode: false
+        in: path
+        name: transaction_uuid
+        required: true
+        schema:
+          description: UUID of the transaction
+          format: uuid
+          title: Transaction Uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Delete Transaction
+      tags:
+      - Transactions
+    get:
+      operationId: get_transaction
+      parameters:
+      - description: UUID of the transaction
+        explode: false
+        in: path
+        name: transaction_uuid
+        required: true
+        schema:
+          description: UUID of the transaction
+          format: uuid
+          title: Transaction Uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRead'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Transaction
+      tags:
+      - Transactions
+    put:
+      operationId: update_transaction
+      parameters:
+      - description: UUID of the transaction
+        explode: false
+        in: path
+        name: transaction_uuid
+        required: true
+        schema:
+          description: UUID of the transaction
+          format: uuid
+          title: Transaction Uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionUpdate'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Update Transaction
+      tags:
+      - Transactions
+  /api/v1/transaction-items:
+    get:
+      operationId: get_user_transaction_items
+      parameters:
+      - description: Get transactions before this date
+        explode: true
+        in: query
+        name: before
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - description: Get transactions after this date
+        explode: true
+        in: query
+        name: after
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          title: Page
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: items_per_page
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          title: Items Per Page
+          type: integer
+        style: form
+      - description: List of tag names to filter transactions by
+        explode: true
+        in: query
+        name: tag_names
+        required: false
+        schema:
+          description: List of tag names to filter transactions by
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: purchase_category_uuid
+        required: false
+        schema:
+          format: uuid
+          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListResponse_TransactionItemReadWithTransactionData_'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get User Transaction Items
+      tags:
+      - User Transaction Items
+  /api/v1/group:
+    get:
+      operationId: get_groups
+      parameters:
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          title: Page
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: items_per_page
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          title: Items Per Page
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListResponse_GroupReadWithUserRole_'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Groups
+      tags:
+      - Group
+    post:
+      operationId: create_group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCreate'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupRead'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Create Group
+      tags:
+      - Group
+  /api/v1/group/{group_uuid}:
+    delete:
+      operationId: delete_group
+      parameters:
+      - description: UUID of the group to delete
+        explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          description: UUID of the group to delete
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Delete Group
+      tags:
+      - Group
+    get:
+      operationId: get_group
+      parameters:
+      - description: UUID of the group to retrieve
+        explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          description: UUID of the group to retrieve
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupReadWithUserRole'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Group
+      tags:
+      - Group
+    put:
+      operationId: update_group
+      parameters:
+      - description: UUID of the group to update
+        explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          description: UUID of the group to update
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupUpdate'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Update Group
+      tags:
+      - Group
+  /api/v1/group/{group_uuid}/users/{username}:
+    delete:
+      operationId: remove_group_user
+      parameters:
+      - description: The UUID of the group
+        explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          description: The UUID of the group
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      - description: The username of the user
+        explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          description: The username of the user
+          maxLength: 30
+          minLength: 2
+          title: Username
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Remove Group User
+      tags:
+      - Group Members
+    post:
+      operationId: add_group_user
+      parameters:
+      - description: The UUID of the group
+        explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          description: The UUID of the group
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      - description: The username of the user
+        explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          description: The username of the user
+          maxLength: 30
+          minLength: 2
+          title: Username
+          type: string
+        style: simple
+      - description: The role of the user in the group
+        explode: true
+        in: query
+        name: user_role
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/UserRole'
+          default: member
+          description: The role of the user in the group
+          title: User Role
+        style: form
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Add Group User
+      tags:
+      - Group Members
+    put:
+      operationId: change_group_user_role
+      parameters:
+      - description: The UUID of the group
+        explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          description: The UUID of the group
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      - description: The username of the user
+        explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          description: The username of the user
+          maxLength: 30
+          minLength: 2
+          title: Username
+          type: string
+        style: simple
+      - description: The role of the user in the group
+        explode: true
+        in: query
+        name: user_role
+        required: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/UserRole'
+          description: The role of the user in the group
+          title: User Role
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Change Group User Role
+      tags:
+      - Group Members
+  /api/v1/group/{group_uuid}/users:
+    get:
+      operationId: get_group_users
+      parameters:
+      - description: The UUID of the group
+        explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          description: The UUID of the group
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          title: Page
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: items_per_page
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          title: Items Per Page
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListResponse_UserReadWithUserRole_'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Group Users
+      tags:
+      - Group Members
+  /api/v1/group/{group_uuid}/purchase-category:
+    get:
+      operationId: get_group_purchase_categories
+      parameters:
+      - description: UUID of the group to which the purchase categories belong.
+        explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          description: UUID of the group to which the purchase categories belong.
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          title: Page
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: items_per_page
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          title: Items Per Page
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListResponse_PurchaseCategoryRead_'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Group Purchase Categories
+      tags:
+      - Group Purchase Category
+    post:
+      operationId: create_group_purchase_category
+      parameters:
+      - description: UUID of the group to which the purchase category belongs.
+        explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          description: UUID of the group to which the purchase category belongs.
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseCategoryCreate'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseCategoryRead'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Create Group Purchase Category
+      tags:
+      - Group Purchase Category
+  /api/v1/group/{group_uuid}/purchase-category/{purchase_category_uuid}:
+    delete:
+      operationId: delete_group_purchase_category
+      parameters:
+      - description: UUID of the group to which the purchase category belongs.
+        explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          description: UUID of the group to which the purchase category belongs.
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      - description: UUID of the purchase category to delete.
+        explode: false
+        in: path
+        name: purchase_category_uuid
+        required: true
+        schema:
+          description: UUID of the purchase category to delete.
+          format: uuid
+          title: Purchase Category Uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Delete Group Purchase Category
+      tags:
+      - Group Purchase Category
+    put:
+      operationId: update_group_purchase_category
+      parameters:
+      - description: UUID of the group to which the purchase category belongs.
+        explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          description: UUID of the group to which the purchase category belongs.
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      - description: UUID of the purchase category to update.
+        explode: false
+        in: path
+        name: purchase_category_uuid
+        required: true
+        schema:
+          description: UUID of the purchase category to update.
+          format: uuid
+          title: Purchase Category Uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseCategoryUpdate'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Update Group Purchase Category
+      tags:
+      - Group Purchase Category
+  /api/v1/group/{group_uuid}/transactions:
+    get:
+      operationId: get_group_transactions
+      parameters:
+      - explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      - description: Get transactions before this date
+        explode: true
+        in: query
+        name: before
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - description: Get transactions after this date
+        explode: true
+        in: query
+        name: after
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          title: Page
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: items_per_page
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          title: Items Per Page
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListResponse_TransactionRead_'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Group Transactions
+      tags:
+      - Group Transactions
+    post:
+      operationId: add_group_transaction
+      parameters:
+      - explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionCreate'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRead'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Add Group Transaction
+      tags:
+      - Group Transactions
+  /api/v1/group/{group_uuid}/transactions/{transaction_uuid}:
+    delete:
+      operationId: delete_group_transaction
+      parameters:
+      - description: UUID of the transaction
+        explode: false
+        in: path
+        name: transaction_uuid
+        required: true
+        schema:
+          description: UUID of the transaction
+          format: uuid
+          title: Transaction Uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Delete Group Transaction
+      tags:
+      - Group Transactions
+    get:
+      operationId: get_group_transaction
+      parameters:
+      - explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      - description: UUID of the transaction
+        explode: false
+        in: path
+        name: transaction_uuid
+        required: true
+        schema:
+          description: UUID of the transaction
+          format: uuid
+          title: Transaction Uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRead'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Group Transaction
+      tags:
+      - Group Transactions
+    put:
+      operationId: update_group_transaction
+      parameters:
+      - description: UUID of the transaction
+        explode: false
+        in: path
+        name: transaction_uuid
+        required: true
+        schema:
+          description: UUID of the transaction
+          format: uuid
+          title: Transaction Uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionUpdate'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Update Group Transaction
+      tags:
+      - Group Transactions
+  /api/v1/group/{group_uuid/transaction-items:
+    get:
+      operationId: get_group_transaction_items
+      parameters:
+      - description: Get transactions before this date
+        explode: true
+        in: query
+        name: before
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - description: Get transactions after this date
+        explode: true
+        in: query
+        name: after
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          title: Page
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: items_per_page
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          title: Items Per Page
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: group_uuid
+        required: true
+        schema:
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: form
+      - description: List of tag names to filter transactions by
+        explode: true
+        in: query
+        name: tag_names
+        required: false
+        schema:
+          description: List of tag names to filter transactions by
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: purchase_category_uuid
+        required: false
+        schema:
+          format: uuid
+          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListResponse_TransactionItemReadWithTransactionData_'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Group Transaction Items
+      tags:
+      - Group Transaction Items
+components:
+  schemas:
+    Body_Login-login_for_access_token:
+      properties:
+        grant_type:
+          nullable: true
+          pattern: password
+          type: string
+        username:
+          title: Username
+          type: string
+        password:
+          title: Password
+          type: string
+        scope:
+          default: ""
+          title: Scope
+          type: string
+        client_id:
+          nullable: true
+          type: string
+        client_secret:
+          nullable: true
+          type: string
+      required:
+      - password
+      - username
+      title: Body_Login-login_for_access_token
+    Currency:
+      enum:
+      - EUR
+      - USD
+      - HUF
+      title: Currency
+      type: string
+    GroupCreate:
+      example:
+        name: name
+      properties:
+        name:
+          description: The name of the group
+          title: Name
+          type: string
+      required:
+      - name
+      title: GroupCreate
+    GroupRead:
+      example:
+        name: name
+        uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        name:
+          description: The name of the group
+          title: Name
+          type: string
+        uuid:
+          format: uuid
+          title: Uuid
+          type: string
+      required:
+      - name
+      - uuid
+      title: GroupRead
+    GroupReadWithUserRole:
+      example:
+        user_role: ""
+        name: name
+        uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        name:
+          description: The name of the group
+          title: Name
+          type: string
+        uuid:
+          format: uuid
+          title: Uuid
+          type: string
+        user_role:
+          allOf:
+          - $ref: '#/components/schemas/UserRole'
+          description: User role.
+      required:
+      - name
+      - user_role
+      - uuid
+      title: GroupReadWithUserRole
+    GroupUpdate:
+      example:
+        name: name
+      properties:
+        name:
+          description: The name of the group
+          title: Name
+          type: string
+      required:
+      - name
+      title: GroupUpdate
+    HTTPValidationError:
+      example:
+        detail:
+        - msg: msg
+          loc:
+          - ValidationError_loc_inner
+          - ValidationError_loc_inner
+          type: type
+        - msg: msg
+          loc:
+          - ValidationError_loc_inner
+          - ValidationError_loc_inner
+          type: type
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      title: HTTPValidationError
+    Message:
+      example:
+        message: message
+      properties:
+        message:
+          title: Message
+          type: string
+      required:
+      - message
+      title: Message
+    PaginatedListResponse_GroupReadWithUserRole_:
+      example:
+        items_per_page: 1
+        data:
+        - user_role: ""
+          name: name
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - user_role: ""
+          name: name
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        total_count: 0
+        has_more: true
+        page: 6
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/GroupReadWithUserRole'
+          type: array
+        total_count:
+          title: Total Count
+          type: integer
+        has_more:
+          title: Has More
+          type: boolean
+        page:
+          nullable: true
+          type: integer
+        items_per_page:
+          nullable: true
+          type: integer
+      required:
+      - data
+      - has_more
+      - total_count
+      title: "PaginatedListResponse[GroupReadWithUserRole]"
+    PaginatedListResponse_PurchaseCategoryRead_:
+      example:
+        items_per_page: 1
+        data:
+        - category_description: category_description
+          category_name: category_name
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - category_description: category_description
+          category_name: category_name
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        total_count: 0
+        has_more: true
+        page: 6
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PurchaseCategoryRead'
+          type: array
+        total_count:
+          title: Total Count
+          type: integer
+        has_more:
+          title: Has More
+          type: boolean
+        page:
+          nullable: true
+          type: integer
+        items_per_page:
+          nullable: true
+          type: integer
+      required:
+      - data
+      - has_more
+      - total_count
+      title: "PaginatedListResponse[PurchaseCategoryRead]"
+    PaginatedListResponse_TransactionItemReadWithTransactionData_:
+      example:
+        items_per_page: 5
+        data:
+        - category_description: category_description
+          amount: 0.08008281904610115
+          category_name: category_name
+          purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          name: name
+          description: description
+          transaction_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          tag_names:
+          - tag_names
+          - tag_names
+          timestamp: 2000-01-23T04:56:07.000+00:00
+        - category_description: category_description
+          amount: 0.08008281904610115
+          category_name: category_name
+          purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          name: name
+          description: description
+          transaction_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          tag_names:
+          - tag_names
+          - tag_names
+          timestamp: 2000-01-23T04:56:07.000+00:00
+        total_count: 6
+        has_more: true
+        page: 1
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/TransactionItemReadWithTransactionData'
+          type: array
+        total_count:
+          title: Total Count
+          type: integer
+        has_more:
+          title: Has More
+          type: boolean
+        page:
+          nullable: true
+          type: integer
+        items_per_page:
+          nullable: true
+          type: integer
+      required:
+      - data
+      - has_more
+      - total_count
+      title: "PaginatedListResponse[TransactionItemReadWithTransactionData]"
+    PaginatedListResponse_TransactionRead_:
+      example:
+        items_per_page: 5
+        data:
+        - amount: 0.08008281904610115
+          transaction_items:
+          - category_description: category_description
+            amount: 0.6027456183070403
+            category_name: category_name
+            purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            name: name
+            description: description
+            uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            tag_names:
+            - tag_names
+            - tag_names
+          - category_description: category_description
+            amount: 0.6027456183070403
+            category_name: category_name
+            purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            name: name
+            description: description
+            uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            tag_names:
+            - tag_names
+            - tag_names
+          name: name
+          description: description
+          currency: ""
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          timestamp: 2000-01-23T04:56:07.000+00:00
+        - amount: 0.08008281904610115
+          transaction_items:
+          - category_description: category_description
+            amount: 0.6027456183070403
+            category_name: category_name
+            purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            name: name
+            description: description
+            uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            tag_names:
+            - tag_names
+            - tag_names
+          - category_description: category_description
+            amount: 0.6027456183070403
+            category_name: category_name
+            purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            name: name
+            description: description
+            uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            tag_names:
+            - tag_names
+            - tag_names
+          name: name
+          description: description
+          currency: ""
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          timestamp: 2000-01-23T04:56:07.000+00:00
+        total_count: 1
+        has_more: true
+        page: 5
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/TransactionRead'
+          type: array
+        total_count:
+          title: Total Count
+          type: integer
+        has_more:
+          title: Has More
+          type: boolean
+        page:
+          nullable: true
+          type: integer
+        items_per_page:
+          nullable: true
+          type: integer
+      required:
+      - data
+      - has_more
+      - total_count
+      title: "PaginatedListResponse[TransactionRead]"
+    PaginatedListResponse_UserReadWithUserRole_:
+      example:
+        items_per_page: 1
+        data:
+        - user_role: ""
+          tier_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          profile_image_url: profile_image_url
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          email: email
+          username: username
+        - user_role: ""
+          tier_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          profile_image_url: profile_image_url
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          email: email
+          username: username
+        total_count: 0
+        has_more: true
+        page: 6
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/UserReadWithUserRole'
+          type: array
+        total_count:
+          title: Total Count
+          type: integer
+        has_more:
+          title: Has More
+          type: boolean
+        page:
+          nullable: true
+          type: integer
+        items_per_page:
+          nullable: true
+          type: integer
+      required:
+      - data
+      - has_more
+      - total_count
+      title: "PaginatedListResponse[UserReadWithUserRole]"
+    PaginatedListResponse_UserRead_:
+      example:
+        items_per_page: 1
+        data:
+        - tier_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          profile_image_url: profile_image_url
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          email: email
+          username: username
+        - tier_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          profile_image_url: profile_image_url
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          email: email
+          username: username
+        total_count: 0
+        has_more: true
+        page: 6
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/UserRead'
+          type: array
+        total_count:
+          title: Total Count
+          type: integer
+        has_more:
+          title: Has More
+          type: boolean
+        page:
+          nullable: true
+          type: integer
+        items_per_page:
+          nullable: true
+          type: integer
+      required:
+      - data
+      - has_more
+      - total_count
+      title: "PaginatedListResponse[UserRead]"
+    PurchaseCategoryCreate:
+      additionalProperties: false
+      example:
+        category_description: category_description
+        category_name: category_name
+      properties:
+        category_name:
+          description: Name of the purchase category.
+          title: Category Name
+          type: string
+        category_description:
+          maxLength: 500
+          nullable: true
+          type: string
+      required:
+      - category_name
+      title: PurchaseCategoryCreate
+    PurchaseCategoryRead:
+      example:
+        category_description: category_description
+        category_name: category_name
+        uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        category_name:
+          description: Name of the purchase category.
+          title: Category Name
+          type: string
+        category_description:
+          maxLength: 500
+          nullable: true
+          type: string
+        uuid:
+          format: uuid
+          title: Uuid
+          type: string
+      required:
+      - category_name
+      - uuid
+      title: PurchaseCategoryRead
+    PurchaseCategoryUpdate:
+      additionalProperties: false
+      example:
+        category_description: category_description
+        category_name: category_name
+      properties:
+        category_name:
+          nullable: true
+          type: string
+        category_description:
+          maxLength: 500
+          nullable: true
+          type: string
+      title: PurchaseCategoryUpdate
+    Token:
+      example:
+        access_token: access_token
+        token_type: token_type
+      properties:
+        access_token:
+          title: Access Token
+          type: string
+        token_type:
+          title: Token Type
+          type: string
+      required:
+      - access_token
+      - token_type
+      title: Token
+    TransactionCreate:
+      example:
+        amount: 0.08008281904610115
+        transaction_items:
+        - amount: 0.6027456183070403
+          purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          name: name
+          description: description
+          tag_names:
+          - tag_names
+          - tag_names
+        - amount: 0.6027456183070403
+          purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          name: name
+          description: description
+          tag_names:
+          - tag_names
+          - tag_names
+        purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        name: name
+        description: description
+        currency: ""
+        tag_names:
+        - tag_names
+        - tag_names
+        timestamp: 2000-01-23T04:56:07.000+00:00
+      properties:
+        timestamp:
+          description: Timestamp must be a valid datetime.
+          format: date-time
+          title: Timestamp
+          type: string
+        amount:
+          description: Value of the transaction.
+          minimum: 0
+          title: Amount
+          type: number
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/Currency'
+          description: Currency of the transaction.
+        name:
+          maxLength: 100
+          nullable: true
+          type: string
+        description:
+          maxLength: 500
+          nullable: true
+          type: string
+        purchase_category_uuid:
+          format: uuid
+          nullable: true
+          type: string
+        tag_names:
+          description: List of tags associated with the transaction.
+          items:
+            type: string
+          type: array
+        transaction_items:
+          description: List of items associated with the transaction.
+          items:
+            $ref: '#/components/schemas/TransactionItemCreate'
+          type: array
+      required:
+      - amount
+      - currency
+      - description
+      - name
+      title: TransactionCreate
+    TransactionItemCreate:
+      example:
+        amount: 0.6027456183070403
+        purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        name: name
+        description: description
+        tag_names:
+        - tag_names
+        - tag_names
+      properties:
+        amount:
+          description: Value of the transaction.
+          minimum: 0
+          title: Amount
+          type: number
+        name:
+          maxLength: 100
+          nullable: true
+          type: string
+        description:
+          maxLength: 500
+          nullable: true
+          type: string
+        purchase_category_uuid:
+          description: Purchase category UUID must be a valid UUIDv4.
+          format: uuid
+          title: Purchase category UUID
+          type: string
+        tag_names:
+          description: List of tags associated with the item.
+          items:
+            type: string
+          type: array
+      required:
+      - amount
+      - description
+      - name
+      - purchase_category_uuid
+      title: TransactionItemCreate
+    TransactionItemRead:
+      example:
+        category_description: category_description
+        amount: 0.6027456183070403
+        category_name: category_name
+        purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        name: name
+        description: description
+        uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        tag_names:
+        - tag_names
+        - tag_names
+      properties:
+        amount:
+          description: Value of the transaction.
+          minimum: 0
+          title: Amount
+          type: number
+        name:
+          maxLength: 100
+          nullable: true
+          type: string
+        description:
+          maxLength: 500
+          nullable: true
+          type: string
+        purchase_category_uuid:
+          description: Purchase category UUID must be a valid UUIDv4.
+          format: uuid
+          title: Purchase category UUID
+          type: string
+        uuid:
+          format: uuid
+          title: Uuid
+          type: string
+        category_name:
+          description: Name of the purchase category.
+          title: Category Name
+          type: string
+        category_description:
+          maxLength: 500
+          nullable: true
+          type: string
+        tag_names:
+          description: List of tags associated with the item.
+          items:
+            type: string
+          type: array
+      required:
+      - amount
+      - category_name
+      - description
+      - name
+      - purchase_category_uuid
+      - uuid
+      title: TransactionItemRead
+    TransactionItemReadWithTransactionData:
+      example:
+        category_description: category_description
+        amount: 0.08008281904610115
+        category_name: category_name
+        purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        name: name
+        description: description
+        transaction_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        tag_names:
+        - tag_names
+        - tag_names
+        timestamp: 2000-01-23T04:56:07.000+00:00
+      properties:
+        amount:
+          description: Value of the transaction.
+          minimum: 0
+          title: Amount
+          type: number
+        name:
+          maxLength: 100
+          nullable: true
+          type: string
+        description:
+          maxLength: 500
+          nullable: true
+          type: string
+        purchase_category_uuid:
+          description: Purchase category UUID must be a valid UUIDv4.
+          format: uuid
+          title: Purchase category UUID
+          type: string
+        uuid:
+          format: uuid
+          title: Uuid
+          type: string
+        category_name:
+          description: Name of the purchase category.
+          title: Category Name
+          type: string
+        category_description:
+          maxLength: 500
+          nullable: true
+          type: string
+        tag_names:
+          description: List of tags associated with the item.
+          items:
+            type: string
+          type: array
+        timestamp:
+          description: Timestamp must be a valid datetime.
+          format: date-time
+          title: Timestamp
+          type: string
+        transaction_uuid:
+          description: UUID of the transaction.
+          format: uuid
+          title: Transaction Uuid
+          type: string
+      required:
+      - amount
+      - category_name
+      - description
+      - name
+      - purchase_category_uuid
+      - timestamp
+      - transaction_uuid
+      - uuid
+      title: TransactionItemReadWithTransactionData
+    TransactionRead:
+      example:
+        amount: 0.08008281904610115
+        transaction_items:
+        - category_description: category_description
+          amount: 0.6027456183070403
+          category_name: category_name
+          purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          name: name
+          description: description
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          tag_names:
+          - tag_names
+          - tag_names
+        - category_description: category_description
+          amount: 0.6027456183070403
+          category_name: category_name
+          purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          name: name
+          description: description
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          tag_names:
+          - tag_names
+          - tag_names
+        name: name
+        description: description
+        currency: ""
+        uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        timestamp: 2000-01-23T04:56:07.000+00:00
+      properties:
+        timestamp:
+          description: Timestamp must be a valid datetime.
+          format: date-time
+          title: Timestamp
+          type: string
+        amount:
+          description: Value of the transaction.
+          minimum: 0
+          title: Amount
+          type: number
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/Currency'
+          description: Currency of the transaction.
+        name:
+          maxLength: 100
+          nullable: true
+          type: string
+        description:
+          maxLength: 500
+          nullable: true
+          type: string
+        uuid:
+          format: uuid
+          title: Uuid
+          type: string
+        transaction_items:
+          description: List of items associated with the transaction.
+          items:
+            $ref: '#/components/schemas/TransactionItemRead'
+          type: array
+      required:
+      - amount
+      - currency
+      - description
+      - name
+      - uuid
+      title: TransactionRead
+    TransactionUpdate:
+      example:
+        amount: 0.08008281904610115
+        transaction_items:
+        - amount: 0.6027456183070403
+          purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          name: name
+          description: description
+          tag_names:
+          - tag_names
+          - tag_names
+        - amount: 0.6027456183070403
+          purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          name: name
+          description: description
+          tag_names:
+          - tag_names
+          - tag_names
+        purchase_category_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        name: name
+        description: description
+        currency: ""
+        tag_names:
+        - tag_names
+        - tag_names
+      properties:
+        purchase_category_uuid:
+          format: uuid
+          nullable: true
+          type: string
+        amount:
+          description: Value of the transaction.
+          minimum: 0
+          title: Amount
+          type: number
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/Currency'
+          description: Currency of the transaction.
+        name:
+          description: Name or title of the transaction.
+          maxLength: 100
+          title: Name
+          type: string
+        description:
+          maxLength: 500
+          nullable: true
+          type: string
+        tag_names:
+          description: List of tags associated with the transaction.
+          items:
+            type: string
+          type: array
+        transaction_items:
+          description: List of items associated with the transaction.
+          items:
+            $ref: '#/components/schemas/TransactionItemCreate'
+          type: array
+      title: TransactionUpdate
+    UserCreate:
+      additionalProperties: false
+      example:
+        password: password
+        tier_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        email: email
+        username: username
+      properties:
+        username:
+          description: Username must be unique and between 2 and 30 characters long.
+          maxLength: 30
+          minLength: 2
+          title: Username
+          type: string
+        email:
+          description: Email must be unique and less than 50 characters long.
+          format: email
+          maxLength: 50
+          title: Email
+          type: string
+        tier_uuid:
+          format: uuid
+          nullable: true
+          type: string
+        password:
+          description: Password must be at least 8 characters long.
+          minLength: 8
+          title: Password
+          type: string
+      required:
+      - email
+      - password
+      - username
+      title: UserCreate
+    UserRead:
+      example:
+        tier_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        profile_image_url: profile_image_url
+        uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        email: email
+        username: username
+      properties:
+        username:
+          description: Username must be unique and between 2 and 30 characters long.
+          maxLength: 30
+          minLength: 2
+          title: Username
+          type: string
+        email:
+          description: Email must be unique and less than 50 characters long.
+          format: email
+          maxLength: 50
+          title: Email
+          type: string
+        tier_uuid:
+          format: uuid
+          nullable: true
+          type: string
+        uuid:
+          format: uuid
+          title: Uuid
+          type: string
+        profile_image_url:
+          nullable: true
+          pattern: "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$"
+          type: string
+      required:
+      - email
+      - username
+      - uuid
+      title: UserRead
+    UserReadWithUserRole:
+      example:
+        user_role: ""
+        tier_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        profile_image_url: profile_image_url
+        uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        email: email
+        username: username
+      properties:
+        username:
+          description: Username must be unique and between 2 and 30 characters long.
+          maxLength: 30
+          minLength: 2
+          title: Username
+          type: string
+        email:
+          description: Email must be unique and less than 50 characters long.
+          format: email
+          maxLength: 50
+          title: Email
+          type: string
+        tier_uuid:
+          format: uuid
+          nullable: true
+          type: string
+        uuid:
+          format: uuid
+          title: Uuid
+          type: string
+        profile_image_url:
+          nullable: true
+          pattern: "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$"
+          type: string
+        user_role:
+          allOf:
+          - $ref: '#/components/schemas/UserRole'
+          description: User role.
+      required:
+      - email
+      - user_role
+      - username
+      - uuid
+      title: UserReadWithUserRole
+    UserRole:
+      enum:
+      - admin
+      - member
+      title: UserRole
+      type: string
+    UserTierUpdate:
+      example:
+        tier_uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        tier_uuid:
+          format: uuid
+          nullable: true
+          type: string
+      required:
+      - tier_uuid
+      title: UserTierUpdate
+    UserUpdate:
+      additionalProperties: false
+      example:
+        profile_image_url: profile_image_url
+        email: email
+        username: username
+      properties:
+        username:
+          maxLength: 30
+          minLength: 2
+          nullable: true
+          type: string
+        email:
+          description: Email must be unique and less than 50 characters long.
+          format: email
+          maxLength: 50
+          title: Email
+          type: string
+        profile_image_url:
+          nullable: true
+          pattern: "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$"
+          type: string
+      required:
+      - email
+      title: UserUpdate
+    ValidationError:
+      example:
+        msg: msg
+        loc:
+        - ValidationError_loc_inner
+        - ValidationError_loc_inner
+        type: type
+      properties:
+        loc:
+          items:
+            $ref: '#/components/schemas/ValidationError_loc_inner'
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ValidationError_loc_inner:
+      anyOf:
+      - type: string
+      - type: integer
+  securitySchemes:
+    OAuth2PasswordBearer:
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: /api/v1/login
+      type: oauth2
+
