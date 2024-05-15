@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Budgeting Server
-  version: 0.1.1
+  version: 0.1.2
 servers:
 - url: /
 paths:
@@ -19,7 +19,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Token'
+                $ref: '#/components/schemas/TokenPair'
           description: Successful Response
         "422":
           content:
@@ -33,13 +33,28 @@ paths:
   /api/v1/refresh:
     post:
       operationId: refresh_access_token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/Token'
+              description: Refresh token.
+              title: Refresh Token
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Token'
+                $ref: '#/components/schemas/TokenPair'
           description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
       summary: Refresh Access Token
       tags:
       - Login
@@ -2147,6 +2162,23 @@ components:
       - access_token
       - token_type
       title: Token
+    TokenPair:
+      example:
+        access_token:
+          access_token: access_token
+          token_type: token_type
+        refresh_token:
+          access_token: access_token
+          token_type: token_type
+      properties:
+        access_token:
+          $ref: '#/components/schemas/Token'
+        refresh_token:
+          $ref: '#/components/schemas/Token'
+      required:
+      - access_token
+      - refresh_token
+      title: TokenPair
     TransactionCreate:
       example:
         amount: 0.08008281904610115

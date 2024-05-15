@@ -27,6 +27,7 @@ docs/PurchaseCategoryCreate.md
 docs/PurchaseCategoryRead.md
 docs/PurchaseCategoryUpdate.md
 docs/Token.md
+docs/TokenPair.md
 docs/TransactionCreate.md
 docs/TransactionItemCreate.md
 docs/TransactionItemRead.md
@@ -72,6 +73,7 @@ src/Org.OpenAPITools.Test/Model/PaginatedListResponseUserReadWithUserRoleTests.c
 src/Org.OpenAPITools.Test/Model/PurchaseCategoryCreateTests.cs
 src/Org.OpenAPITools.Test/Model/PurchaseCategoryReadTests.cs
 src/Org.OpenAPITools.Test/Model/PurchaseCategoryUpdateTests.cs
+src/Org.OpenAPITools.Test/Model/TokenPairTests.cs
 src/Org.OpenAPITools.Test/Model/TokenTests.cs
 src/Org.OpenAPITools.Test/Model/TransactionCreateTests.cs
 src/Org.OpenAPITools.Test/Model/TransactionItemCreateTests.cs
@@ -135,6 +137,7 @@ src/Org.OpenAPITools/Model/PurchaseCategoryCreate.cs
 src/Org.OpenAPITools/Model/PurchaseCategoryRead.cs
 src/Org.OpenAPITools/Model/PurchaseCategoryUpdate.cs
 src/Org.OpenAPITools/Model/Token.cs
+src/Org.OpenAPITools/Model/TokenPair.cs
 src/Org.OpenAPITools/Model/TransactionCreate.cs
 src/Org.OpenAPITools/Model/TransactionItemCreate.cs
 src/Org.OpenAPITools/Model/TransactionItemRead.cs

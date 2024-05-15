@@ -10,7 +10,7 @@ All URIs are relative to *http://localhost*
 
 <a id="loginforaccesstoken"></a>
 # **LoginForAccessToken**
-> Token LoginForAccessToken (string username, string password, string? grantType = null, string? scope = null, string? clientId = null, string? clientSecret = null)
+> TokenPair LoginForAccessToken (string username, string password, string? grantType = null, string? scope = null, string? clientId = null, string? clientSecret = null)
 
 Login For Access Token
 
@@ -41,7 +41,7 @@ namespace Example
             try
             {
                 // Login For Access Token
-                Token result = apiInstance.LoginForAccessToken(username, password, grantType, scope, clientId, clientSecret);
+                TokenPair result = apiInstance.LoginForAccessToken(username, password, grantType, scope, clientId, clientSecret);
                 Debug.WriteLine(result);
             }
             catch (ApiException  e)
@@ -62,7 +62,7 @@ This returns an ApiResponse object which contains the response data, status code
 try
 {
     // Login For Access Token
-    ApiResponse<Token> response = apiInstance.LoginForAccessTokenWithHttpInfo(username, password, grantType, scope, clientId, clientSecret);
+    ApiResponse<TokenPair> response = apiInstance.LoginForAccessTokenWithHttpInfo(username, password, grantType, scope, clientId, clientSecret);
     Debug.Write("Status Code: " + response.StatusCode);
     Debug.Write("Response Headers: " + response.Headers);
     Debug.Write("Response Body: " + response.Data);
@@ -88,7 +88,7 @@ catch (ApiException e)
 
 ### Return type
 
-[**Token**](Token.md)
+[**TokenPair**](TokenPair.md)
 
 ### Authorization
 
@@ -197,7 +197,7 @@ This endpoint does not need any parameter.
 
 <a id="refreshaccesstoken"></a>
 # **RefreshAccessToken**
-> Token RefreshAccessToken ()
+> TokenPair RefreshAccessToken (Token token)
 
 Refresh Access Token
 
@@ -218,11 +218,12 @@ namespace Example
             Configuration config = new Configuration();
             config.BasePath = "http://localhost";
             var apiInstance = new LoginApi(config);
+            var token = new Token(); // Token | 
 
             try
             {
                 // Refresh Access Token
-                Token result = apiInstance.RefreshAccessToken();
+                TokenPair result = apiInstance.RefreshAccessToken(token);
                 Debug.WriteLine(result);
             }
             catch (ApiException  e)
@@ -243,7 +244,7 @@ This returns an ApiResponse object which contains the response data, status code
 try
 {
     // Refresh Access Token
-    ApiResponse<Token> response = apiInstance.RefreshAccessTokenWithHttpInfo();
+    ApiResponse<TokenPair> response = apiInstance.RefreshAccessTokenWithHttpInfo(token);
     Debug.Write("Status Code: " + response.StatusCode);
     Debug.Write("Response Headers: " + response.Headers);
     Debug.Write("Response Body: " + response.Data);
@@ -257,10 +258,14 @@ catch (ApiException e)
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **token** | [**Token**](Token.md) |  |  |
+
 ### Return type
 
-[**Token**](Token.md)
+[**TokenPair**](TokenPair.md)
 
 ### Authorization
 
@@ -268,7 +273,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 
@@ -276,6 +281,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Successful Response |  -  |
+| **422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
