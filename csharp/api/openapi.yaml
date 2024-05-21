@@ -1,10 +1,35 @@
 openapi: 3.1.0
 info:
   title: Budgeting Server
-  version: 0.1.2
+  version: 0.1.4
 servers:
 - url: /
 paths:
+  /api/v1/login-swagger:
+    post:
+      operationId: login_for_access_token_swagger
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_Login-login_for_access_token_swagger'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Login For Access Token Swagger
+      tags:
+      - Login
   /api/v1/login:
     post:
       operationId: login_for_access_token
@@ -1682,6 +1707,123 @@ paths:
       summary: Get Group Transaction Items
       tags:
       - Group Transaction Items
+  /api/v1/stats/by-purchase-category:
+    get:
+      operationId: get_purchase_category_statistics
+      parameters:
+      - description: Currency to use for the statistics
+        explode: true
+        in: query
+        name: currency
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/Currency'
+          default: HUF
+          description: Currency to use for the statistics
+          title: Currency
+        style: form
+      - description: Get transactions before this date
+        explode: true
+        in: query
+        name: before
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - description: Get transactions after this date
+        explode: true
+        in: query
+        name: after
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseCategoryStatistics'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Purchase Category Statistics
+      tags:
+      - User Statistics
+  /api/v1/group/{group_uuid}/stats/by-purchase-category:
+    get:
+      operationId: get_group_purchase_category_statistics
+      parameters:
+      - explode: false
+        in: path
+        name: group_uuid
+        required: true
+        schema:
+          format: uuid
+          title: Group Uuid
+          type: string
+        style: simple
+      - description: Currency to use for the statistics
+        explode: true
+        in: query
+        name: currency
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/Currency'
+          default: HUF
+          description: Currency to use for the statistics
+          title: Currency
+        style: form
+      - description: Get transactions before this date
+        explode: true
+        in: query
+        name: before
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      - description: Get transactions after this date
+        explode: true
+        in: query
+        name: after
+        required: false
+        schema:
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseCategoryStatistics'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Get Group Purchase Category Statistics
+      tags:
+      - Group Statistics
 components:
   schemas:
     Body_Login-login_for_access_token:
@@ -1710,6 +1852,32 @@ components:
       - password
       - username
       title: Body_Login-login_for_access_token
+    Body_Login-login_for_access_token_swagger:
+      properties:
+        grant_type:
+          nullable: true
+          pattern: password
+          type: string
+        username:
+          title: Username
+          type: string
+        password:
+          title: Password
+          type: string
+        scope:
+          default: ""
+          title: Scope
+          type: string
+        client_id:
+          nullable: true
+          type: string
+        client_secret:
+          nullable: true
+          type: string
+      required:
+      - password
+      - username
+      title: Body_Login-login_for_access_token_swagger
     Currency:
       enum:
       - EUR
@@ -2133,6 +2301,61 @@ components:
       - category_name
       - uuid
       title: PurchaseCategoryRead
+    PurchaseCategoryStatistics:
+      example:
+        item_count: 1
+        total: 5.962133916683182
+        items:
+        - item_count: 0
+          purchase_category:
+            category_description: category_description
+            category_name: category_name
+            uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          total: 6.027456183070403
+        - item_count: 0
+          purchase_category:
+            category_description: category_description
+            category_name: category_name
+            uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          total: 6.027456183070403
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/PurchaseCategoryStatisticsItem'
+          type: array
+        item_count:
+          title: Item Count
+          type: integer
+        total:
+          title: Total
+          type: number
+      required:
+      - item_count
+      - items
+      - total
+      title: PurchaseCategoryStatistics
+    PurchaseCategoryStatisticsItem:
+      example:
+        item_count: 0
+        purchase_category:
+          category_description: category_description
+          category_name: category_name
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        total: 6.027456183070403
+      properties:
+        purchase_category:
+          $ref: '#/components/schemas/PurchaseCategoryRead'
+        item_count:
+          title: Item Count
+          type: integer
+        total:
+          title: Total
+          type: number
+      required:
+      - item_count
+      - purchase_category
+      - total
+      title: PurchaseCategoryStatisticsItem
     PurchaseCategoryUpdate:
       additionalProperties: false
       example:
@@ -2728,6 +2951,6 @@ components:
       flows:
         password:
           scopes: {}
-          tokenUrl: /api/v1/login
+          tokenUrl: /api/v1/login-swagger
       type: oauth2
 

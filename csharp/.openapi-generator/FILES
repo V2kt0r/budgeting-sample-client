@@ -11,6 +11,7 @@ docs/GroupMembersApi.md
 docs/GroupPurchaseCategoryApi.md
 docs/GroupRead.md
 docs/GroupReadWithUserRole.md
+docs/GroupStatisticsApi.md
 docs/GroupTransactionItemsApi.md
 docs/GroupTransactionsApi.md
 docs/GroupUpdate.md
@@ -25,6 +26,8 @@ docs/PaginatedListResponseUserRead.md
 docs/PaginatedListResponseUserReadWithUserRole.md
 docs/PurchaseCategoryCreate.md
 docs/PurchaseCategoryRead.md
+docs/PurchaseCategoryStatistics.md
+docs/PurchaseCategoryStatisticsItem.md
 docs/PurchaseCategoryUpdate.md
 docs/Token.md
 docs/TokenPair.md
@@ -40,6 +43,7 @@ docs/UserPurchaseCategoryApi.md
 docs/UserRead.md
 docs/UserReadWithUserRole.md
 docs/UserRole.md
+docs/UserStatisticsApi.md
 docs/UserTierUpdate.md
 docs/UserTransactionItemsApi.md
 docs/UserUpdate.md
@@ -50,11 +54,13 @@ git_push.sh
 src/Org.OpenAPITools.Test/Api/GroupApiTests.cs
 src/Org.OpenAPITools.Test/Api/GroupMembersApiTests.cs
 src/Org.OpenAPITools.Test/Api/GroupPurchaseCategoryApiTests.cs
+src/Org.OpenAPITools.Test/Api/GroupStatisticsApiTests.cs
 src/Org.OpenAPITools.Test/Api/GroupTransactionItemsApiTests.cs
 src/Org.OpenAPITools.Test/Api/GroupTransactionsApiTests.cs
 src/Org.OpenAPITools.Test/Api/LoginApiTests.cs
 src/Org.OpenAPITools.Test/Api/TransactionsApiTests.cs
 src/Org.OpenAPITools.Test/Api/UserPurchaseCategoryApiTests.cs
+src/Org.OpenAPITools.Test/Api/UserStatisticsApiTests.cs
 src/Org.OpenAPITools.Test/Api/UserTransactionItemsApiTests.cs
 src/Org.OpenAPITools.Test/Api/UsersApiTests.cs
 src/Org.OpenAPITools.Test/Model/CurrencyTests.cs
@@ -72,6 +78,8 @@ src/Org.OpenAPITools.Test/Model/PaginatedListResponseUserReadTests.cs
 src/Org.OpenAPITools.Test/Model/PaginatedListResponseUserReadWithUserRoleTests.cs
 src/Org.OpenAPITools.Test/Model/PurchaseCategoryCreateTests.cs
 src/Org.OpenAPITools.Test/Model/PurchaseCategoryReadTests.cs
+src/Org.OpenAPITools.Test/Model/PurchaseCategoryStatisticsItemTests.cs
+src/Org.OpenAPITools.Test/Model/PurchaseCategoryStatisticsTests.cs
 src/Org.OpenAPITools.Test/Model/PurchaseCategoryUpdateTests.cs
 src/Org.OpenAPITools.Test/Model/TokenPairTests.cs
 src/Org.OpenAPITools.Test/Model/TokenTests.cs
@@ -93,11 +101,13 @@ src/Org.OpenAPITools.Test/Org.OpenAPITools.Test.csproj
 src/Org.OpenAPITools/Api/GroupApi.cs
 src/Org.OpenAPITools/Api/GroupMembersApi.cs
 src/Org.OpenAPITools/Api/GroupPurchaseCategoryApi.cs
+src/Org.OpenAPITools/Api/GroupStatisticsApi.cs
 src/Org.OpenAPITools/Api/GroupTransactionItemsApi.cs
 src/Org.OpenAPITools/Api/GroupTransactionsApi.cs
 src/Org.OpenAPITools/Api/LoginApi.cs
 src/Org.OpenAPITools/Api/TransactionsApi.cs
 src/Org.OpenAPITools/Api/UserPurchaseCategoryApi.cs
+src/Org.OpenAPITools/Api/UserStatisticsApi.cs
 src/Org.OpenAPITools/Api/UserTransactionItemsApi.cs
 src/Org.OpenAPITools/Api/UsersApi.cs
 src/Org.OpenAPITools/Client/ApiClient.cs
@@ -135,6 +145,8 @@ src/Org.OpenAPITools/Model/PaginatedListResponseUserRead.cs
 src/Org.OpenAPITools/Model/PaginatedListResponseUserReadWithUserRole.cs
 src/Org.OpenAPITools/Model/PurchaseCategoryCreate.cs
 src/Org.OpenAPITools/Model/PurchaseCategoryRead.cs
+src/Org.OpenAPITools/Model/PurchaseCategoryStatistics.cs
+src/Org.OpenAPITools/Model/PurchaseCategoryStatisticsItem.cs
 src/Org.OpenAPITools/Model/PurchaseCategoryUpdate.cs
 src/Org.OpenAPITools/Model/Token.cs
 src/Org.OpenAPITools/Model/TokenPair.cs
